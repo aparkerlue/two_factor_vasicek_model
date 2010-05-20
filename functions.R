@@ -20,6 +20,15 @@ factors <- function(t1, y1, t2, y2, p) {
   solve(lhs, rhs)
 }
 
+factor.ts <- function(data, p) {
+  ## Generate time series for factors X and Y.
+  u <- mapply(sprintf, data$year, data$month, data$day,
+              MoreArgs=list(fmt="%4d-%02d-%02d"))
+  v <- mapply(factors, y1=data$cmt0.25, y2=data$cmt10,
+              MoreArgs=list(t1=0.25, t2=10, p=p))
+  ts <- data.frame(date=u, x=v[1,], y=v[2,])
+}
+
 ## Input:
 ##   ts: X and Y time series data frame
 ##   p: named parameter vector
@@ -62,11 +71,7 @@ rmse <- function(a, b)  sqrt(sum((a - b)^2))/4
 ## p: named vector of parameters
 vasicek.rmse <- function(p, data) {
   ## Generate time series for factors X and Y.
-  u <- mapply(sprintf, data$year, data$month, data$day,
-              MoreArgs=list(fmt="%4d-%02d-%02d"))
-  v <- mapply(factors, y1=data$cmt0.25, y2=data$cmt10,
-              MoreArgs=list(t1=0.25, t2=10, p=p))
-  ts <- data.frame(date=u, x=v[1,], y=v[2,])
+  ts <- factor.ts(data, p)
 
   ## Generate D(t).
   Dt <- d.from.factors(ts, p)
