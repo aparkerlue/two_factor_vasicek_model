@@ -40,3 +40,49 @@ d.from.factors <- function(ts, p) {
   }
   return(r)
 }
+
+## Input:
+##   d: list of data frames (per date) that include t's and D(T)'s
+##   t: vector of maturities
+## Output: Data frame of date and one column for each par-rate-maturity.
+par.from.d <- function(d) {
+  t <- c(2,3,5,7)
+  r <- data.frame()
+  for (i in names(d)) {                 # FIXME: hardcoding maturities
+    r <- rbind(r, data.frame(date=i, p2=0, p3=0, p5=0, p7=0))
+    i.Dt <- 2*t[1] + 1                  # FIXME: hack
+    r$p2[nrow(r)] <- 2*(1 - d[[i]]$Dt[i.Dt])/sum(d[[i]]$Dt[1:i.Dt])
+    i.Dt <- 2*t[2] + 1                  # FIXME: hack
+    r$p3[nrow(r)] <- 2*(1 - d[[i]]$Dt[i.Dt])/sum(d[[i]]$Dt[1:i.Dt])
+    i.Dt <- 2*t[3] + 1                  # FIXME: hack
+    r$p5[nrow(r)] <- 2*(1 - d[[i]]$Dt[i.Dt])/sum(d[[i]]$Dt[1:i.Dt])
+    i.Dt <- 2*t[4] + 1                  # FIXME: hack
+    r$p7[nrow(r)] <- 2*(1 - d[[i]]$Dt[i.Dt])/sum(d[[i]]$Dt[1:i.Dt])
+  }
+  return(r)
+}
+
+## Input: two matrices
+rmse <- function(a, b)  sqrt(sum((a - b)^2))/4
+
+## Input: named vector of parameters
+vasicek.rmse <- function(p, d) {
+  ## Generate time series for factors X and Y.
+  r <- data.frame(date=numeric(0), x=numeric(0), y=numeric(0))
+  for (i in 1:nrow(d)) {
+    xy <- factors(t1=0.25, y1=d$cmt0.25[i], t2=10, y2=d$cmt10[i],
+                  a.x=p[1], b.x=p[2], s.x=p[3], b.y=p[4], s.y=p[5])
+    r <- rbind(r, c(0, xy))
+    r[i,1] <- sprintf("%4d-%02d-%02d", d$year[i], d$month[i], d$day[i])
+  }
+  names(r) <- c("date", "x", "y")
+
+  ## Generate D(t).
+  Dt <- d.from.factors(r, p)
+
+  ## Compute par rates.
+  par <- par.from.d(Dt)
+
+  ## Compute RMSE.
+  rmse(as.matrix(par[,2:5]), as.matrix(d[,c(12:15)]))
+}

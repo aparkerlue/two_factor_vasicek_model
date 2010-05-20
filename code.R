@@ -2,21 +2,16 @@ source('functions.R')
 
 ## Read in CMT data.
 d <- read.table("homework5data.txt", header=TRUE, sep="\t")
+d$cmt0.25 <- d$cmt0.25 / 100
+d$cmt2 <- d$cmt2 / 100
+d$cmt3 <- d$cmt3 / 100
+d$cmt5 <- d$cmt5 / 100
+d$cmt7 <- d$cmt7 / 100
+d$cmt10 <- d$cmt10 / 100
 head(d[,c(1:3,11:16)])                  # Relevant columns.
-nrow(d)
+head(d[,c(12:15)])
 
 ## Assume values for parameters.
 p <- c(a.x=0.1, b.x=0.1, s.x=0.3, b.y=0.1, s.y=0.3)
 
-## Generate time series for factors X and Y.
-r <- data.frame(date=numeric(0), x=numeric(0), y=numeric(0))
-for (i in 1:nrow(d)) {
-  xy <- factors(t1=0.25, y1=d$cmt0.25[i], t2=10, y2=d$cmt10[i],
-                a.x=p[1], b.x=p[2], s.x=p[3], b.y=p[4], s.y=p[5])
-  r <- rbind(r, c(0, xy))
-  r[i,1] <- sprintf("%4d-%02d-%02d", d$year[i], d$month[i], d$day[i])
-}
-names(r) <- c("date", "x", "y")
-
-## Generate D(t).
-Dt <- d.from.factors(r, p)
+optim(p, vasicek.rmse, d=d)
