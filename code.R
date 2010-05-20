@@ -12,6 +12,6 @@ head(d[,c(1:3,11:16)])                  # Relevant columns.
 head(d[,c(12:15)])
 
 ## Assume values for parameters.
-p <- c(a.x=0.1, b.x=0.1, s.x=0.3, b.y=0.1, s.y=0.3)
+p <- c(a.x=0.0041109, b.x=0.0383212, s.x=0.0097854, b.y=0.448712, s.y=0.018566)
 
 optim(p, vasicek.rmse, d=d)
