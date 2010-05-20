@@ -16,22 +16,22 @@ p <- c(a.x=0.004109,
 
 ## Minimize RMSE.
 ##
-## Took about 45 minutes.
+## Took about 1 hour and 34 minutes.
 ## 
 ## > system.time(source('code.R'))
 ##     user   system  elapsed 
-## 2727.072    9.001 2807.721
+## 5624.946   16.212 5695.069
 ## > vasicek.rmse.minimization
 ## $par
-##           a.x           b.x           s.x           b.y           s.y 
-##  1.377840e-02  2.886231e-01  8.937230e-03 -1.526229e-01 -3.090562e-07 
+##          a.x          b.x          s.x          b.y          s.y 
+## 1.081711e-02 1.892359e-01 2.244451e-05 8.901244e-09 1.076640e-14 
 ## 
 ## $value
-## [1] 0.07994415
+## [1] 0.08312986
 ## 
 ## $counts
 ## function gradient 
-##      128       NA 
+##      394       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -40,10 +40,10 @@ p <- c(a.x=0.004109,
 ## NULL
 ## 
 ## $outer.iterations
-## [1] 7
+## [1] 11
 ## 
 ## $barrier.value
-## [1] 6.472759e-05
+## [1] 5.643135e-05
 ## 
 ## > save(vasicek.rmse.minimization, file="vasicek.rmse.minimization.RData")
 vasicek.rmse.minimization <-
