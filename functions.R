@@ -75,5 +75,5 @@ vasicek.rmse <- function(p, data) {
   par <- par.from.d(Dt)
 
   ## Compute RMSE.
-  rmse(as.matrix(par[,2:5]), as.matrix(d[,c(12:15)]))
+  rmse(as.matrix(par[,2:5]), as.matrix(data[,12:15]))
 }
